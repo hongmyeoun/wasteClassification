@@ -2,9 +2,7 @@ package com.example.myapplication.Component
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import com.example.myapplication.ml.WasteClassificatiionCnnModelOptimized
+import com.example.myapplication.ml.Model
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
@@ -12,13 +10,13 @@ import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 
 fun HandleButtonClick(context: Context, bitmap: Bitmap?, imageProcessor: ImageProcessor): String {
     if (bitmap != null) {
-        val model = WasteClassificatiionCnnModelOptimized.newInstance(context)
+        val model = Model.newInstance(context)
         var tensorImage = TensorImage(DataType.UINT8)
         tensorImage.load(bitmap)
         tensorImage = imageProcessor.process(tensorImage)
 
         val inputFeature0 =
-            TensorBuffer.createFixedSize(intArrayOf(1, 150, 150, 3), DataType.FLOAT32)
+            TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
         inputFeature0.loadBuffer(tensorImage.buffer)
 
         val outputs = model.process(inputFeature0)
